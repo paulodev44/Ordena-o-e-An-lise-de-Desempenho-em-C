@@ -8,12 +8,12 @@ Este projeto contém a implementação e análise de três algoritmos de ordena�
 
 Foram escolhidos os três algoritmos quadráticos clássicos (O(n²)) para permitir uma comparação direta de suas eficiências em dados aleatórios e pequenos:
 
-* **Bubble Sort:** Compara pares adjacentes e os troca se estiverem fora de ordem. É simples, mas geralmente o mais lento.
+* **Bubble Sort:** Compara pares adjacentes e os troca se estiverem fora de ordem. É simples, mas geralmente o mais lento devido ao alto número de trocas.
 
-* **Selection Sort:** Encontra o menor elemento restante e o coloca na posição correta. Minimiza o número de trocas (O(n) trocas).
+* **Selection Sort:** Encontra o menor elemento restante e o coloca na posição correta. Minimiza o número de trocas (sempre O(n)), mas mantém alto custo de comparações.
 
-* **Insertion Sort:** Constrói a lista ordenada "in-place", inserindo cada elemento em sua posição correta na sub-lista já ordenada. É eficiente para dados pequenos ou quase ordenados.
-
+* **Insertion Sort:** Constrói a lista ordenada "in-place", inserindo cada elemento em sua posição correta na sub-lista já ordenada. É eficiente para dados pequenos e tem melhor desempenho de cache.
+  
 ## 2. Como Compilar e Rodar
 
 **Pré-requisitos**
@@ -42,18 +42,18 @@ gcc -std=c11 -O1 src/*.c -o build/ordena
 ```
 **Exemplo de execução:**
 ```
-Digite seu RGM (apenas digitos): 12345678
-```
-```
- --- RGM Original (N=8) ---
- Dígitos: [1, 2, 3, 4, 5, 6, 7, 8]
-```
-```
- Iniciando medicoes (Média de 5 execucoes)...
-```
-```
- metodo,N,caso,passos,tempo_ms
- [... SAÍDA CSV ...]
+Digite seu RGM (apenas digitos): 44725264
+
+--- RGM (N=8) ---
+Dígitos: [4, 4, 7, 2, 5, 2, 6, 4]
+
+Iniciando medicoes (Média de 5 execucoes)...
+**************************************************
+**** INICIO DOS DADOS CSV ***
+**************************************************
+
+metodo,N,caso,passos,tempo_ms
+[... SAÍDA DE DADOS ...]
 ```
 
 ## 3. Metodologia de Coleta de Métricas
@@ -62,83 +62,90 @@ Digite seu RGM (apenas digitos): 12345678
 
 A política de contagem de "passos" (operações-chave) foi definida da seguinte forma, visando consistência:
 
-* steps_cmp (Comparações): Incrementado 1 vez a cada comparação lógica entre dois elementos do vetor (ex: if (v[j] > v[j+1]) ou while (v[j] > key)).
+* steps_cmp (Comparações): Incrementado 1 vez a cada comparação lógica (if, while) entre elementos do vetor.
 
-* steps_swap (Trocas/Movimentações): Incrementado 1 vez para cada "movimentação" de dados:
+* steps_swap (Trocas/Movimentações): Incrementado 1 vez para cada movimentação de memória (troca completa ou deslocamento no Insertion Sort).
 
-* Para Bubble e Selection: 1 incremento por chamada da função swap().
-
-* Para Insertion: 1 incremento por deslocamento (v[j+1] = v[j]) e 1 incremento pela inserção final (v[j+1] = key).
-
-* O "total de passos" reportado no CSV é a soma: passos = steps_cmp + steps_swap.
+* Total: A coluna passos no CSV é a soma steps_cmp + steps_swap.
 
 **Medição de Tempo**
 
-* O tempo foi medido usando a função clock() da <time.h>, que mede o tempo de CPU consumido pelo processo.
+* Utiliza a função clock() da biblioteca <time.h>.
 
-* O tempo_ms é a média de 5 execuções (N_RUNS = 5) para cada tupla (método, N, caso).
+* O valor tempo_ms representa a média aritmética de 5 execuções para cada cenário.
 
-* Para os casos aleatorios, um novo vetor aleatório é gerado para cada uma das 5 execuções, garantindo que a média represente o desempenho em dados aleatórios genéricos, e não um caso de sorte (ou azar).
+* Nos testes aleatórios, um novo vetor é gerado a cada execução para garantir estatística justa.
 
 ## 4. Resultados (Tabela CSV)
-
-Atenção: Cole aqui a saída CSV gerada pelo seu programa após a execução. Os dados abaixo são apenas um exemplo ilustrativo.
-
-<!--
-IMPORTANTE: RODE O SEU PROGRAMA E COLE A SAÍDA CSV AQUI
-(substitua este bloco de exemplo)
--->
-
+**RGM: 44725264**
+```
 metodo,N,caso,passos,tempo_ms
-bubble,8,rgm,44,0.0010
-selection,8,rgm,35,0.0008
-insertion,8,rgm,22,0.0006
-bubble,100,aleatorio,12838,0.0212
-selection,100,aleatorio,5049,0.0104
-insertion,100,aleatorio,4981,0.0099
-bubble,1000,aleatorio,12502488,10.2234
-selection,1000,aleatorio,500499,3.8812
-insertion,1000,aleatorio,2509121,4.0102
-bubble,10000,aleatorio,124976736,998.4452
-selection,10000,aleatorio,50004999,360.2218
-insertion,10000,aleatorio,250013970,375.1234
-
+Bubble,8,RGM,37,0.0000
+Selection,8,RGM,34,0.0000
+Insertion,8,RGM,37,0.0000
+Bubble,100,Aleatorio,7348,0.0000
+Selection,100,Aleatorio,5046,0.0000
+Insertion,100,Aleatorio,5075,0.0000
+Bubble,1000,Aleatorio,744774,0.6000
+Selection,1000,Aleatorio,500492,0.2000
+Insertion,1000,Aleatorio,506833,0.2000
+Bubble,10000,Aleatorio,74960133,38.2000
+Selection,10000,Aleatorio,50004989,25.6000
+Insertion,10000,Aleatorio,50029526,18.2000
+```
 
 <!-- FIM DA SEÇÃO DE EXEMPLO CSV -->
 
-## 5. Análise Crítica e Conclusão
+## 5. Análise Crítica
 
-**Computabilidade e Corretude**
+**Computabilidade e Corretude**: Todos os métodos ordenaram corretamente tanto o vetor de dígitos do RGM (com repetições) quanto as amostras aleatórias. A lógica de ordenação se provou robusta.
 
 * Todos os três métodos foram capazes de ordenar corretamente tanto os dígitos do RGM (incluindo dígitos repetidos) quanto os vetores aleatórios de todos os tamanhos, demonstrando robustez.
 
-**Escalabilidade (O(n²) vs. Prática)**
+**Escalabilidade (Teoria vs Prática)** Observou-se claramente o comportamento quadrático O(n²).
 
-* A complexidade assintótica esperada para todos os três métodos no caso médio (aleatório) é O(n²). Analisando os dados da tabela (use seus dados aqui):
+* Ao aumentar N de 1.000 para 10.000 (10x), o número de passos e o tempo aumentaram aproximadamente 100x (10²).
 
-De N=100 para N=1000 (aumento de 10x em N):
+* Exemplo (Insertion Sort): Passos foram de ~500 mil para ~50 milhões.
 
-Esperaríamos um aumento de ~100x (10²) no tempo e nos passos.
 
-**Insertion (exemplo):** Passos foram de 4981 para 2509121 (~503x). Tempo foi de 0.0099 para 4.0102 (~405x).
+**Comparação de Desempenho**
 
-**Selection (exemplo):** Passos foram de 5049 para 500499 (~99x). Tempo foi de 0.0104 para 3.8812 (~373x).
+* **Insertion Sort (18.2 ms):** Foi o mais rápido para N=10.000. Sua eficiência prática se deve ao acesso sequencial de memória ("cache-friendly") e simplicidade do loop interno.
 
-De N=1000 para N=10000 (aumento de 10x em N):
+* **Selection Sort (25.6 ms):** Teve desempenho intermediário. Embora faça o mínimo de trocas possível, o alto número de comparações pesa no tempo final.
 
-Esperaríamos outro aumento de ~100x.
+* **Bubble Sort (38.2 ms):** Consistentemente o pior. Realiza excesso de movimentações e comparações desnecessárias.
 
-**Selection (exemplo):** Passos foram de 500499 para 50004999 (~100x). O tempo foi de 3.8812 para 360.2218 (~92x).
+## 6. Tratamento de Erros e Limitações
+O programa foi desenvolvido com foco em robustez, tratando os seguintes cenários de exceção e limitações técnicas:
 
-***Observação:*** Os resultados práticos confirmam a complexidade teórica O(n²). O número de passos do Selection Sort é extremamente previsível (~N²/2 comparações), o que foi observado na prática. O tempo não escala exatamente 100x devido a overheads de sistema, cache e a precisão do clock().
+**Validação de Entrada do RGM:**
 
-## Comparação de Desempenho
+* O sistema utiliza uma função dedicada str_to_digits que filtra apenas os caracteres numéricos.
 
-* **Bubble Sort:** Foi consistentemente o pior método em todos os cenários, tanto em passos quanto em tempo. Ele realiza um número muito alto de comparações e trocas (passos).
+* Erro Tratado: Se o usuário digitar letras ou símbolos (ex: "123abc4"), o programa ignora os caracteres inválidos e processa apenas os números.
 
-* **Selection Sort:** Foi o "campeão" em número de trocas (como esperado pela teoria, fazendo apenas O(n) trocas). No entanto, o número de comparações é fixo e alto (N*(N-1)/2).
+* RGM Vazio: Se nenhuma entrada numérica for detectada, o programa exibe uma mensagem de erro (RGM invalido) na saída padrão (stderr) e encerra a execução com código de erro 1, evitando falhas de segmentação.
 
-* **Insertion Sort:** Apresentou o melhor tempo de execução para N=100 e N=1000 (nos meus dados de exemplo). Embora seu número de passos (comparações + movimentações) possa ser maior que o do Selection Sort em dados aleatórios, suas operações no loop interno são (frequentemente) mais simples e rápidas ("cache-friendly"), o que resulta em um tempo de CPU menor.
+**Gerenciamento de Memória (Alocação Dinâmica):**
+
+* Todas as alocações de vetores (para RGM e Benchmarks) são feitas via malloc.
+
+* Erro Tratado: O código verifica se o ponteiro retornado é NULL (caso falte memória RAM no sistema). Se ocorrer falha, o programa libera qualquer memória previamente alocada, avisa o usuário e encerra com segurança.
+
+**Precisão do Relógio (Limitação de Hardware):**
+
+* Para vetores muito pequenos (N=8 ou N=100), o tempo de execução é frequentemente menor que a resolução mínima do clock do sistema operacional.
+
+* Limitação: Isso resulta em tempos reportados como 0.0000 ms. Isso não é um erro de lógica, mas uma limitação da função clock() em medir intervalos de microssegundos em alguns sistemas operacionais (especialmente Windows).
+
+**Overflow de Tipos (Contagem de Passos):**
+
+* Para N=10.000 ou superior, o número de operações em algoritmos O(n²) supera o limite de um inteiro comum (32-bit int, máx ~2 bilhões).
+
+* Solução: A estrutura Metrics utiliza o tipo long long (64-bit), garantindo que a contagem de passos não "dê a volta" (overflow) mesmo em testes exaustivos.
+
 
 ## Conclusão: O "Melhor" Método
 
@@ -150,4 +157,5 @@ Baseado nos testes com dados aleatórios, o Insertion Sort se mostrou o "melhor"
 
 
 * Para N=10.000, o tempo de todos os métodos O(n²) começa a se tornar impraticável (quase 1 segundo para o Bubble Sort), demonstrando a necessidade clara de algoritmos O(n log n) (como Merge ou Quick Sort) para conjuntos de dados maiores.
+
 
