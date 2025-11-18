@@ -122,12 +122,12 @@ O programa foi desenvolvido com foco em robustez, tratando os seguintes cenário
 
 **Validação de Entrada do RGM:**
 
-* O sistema utiliza uma função dedicada str_to_digits que filtra apenas os caracteres numéricos.
+* O sistema realiza uma varredura completa na entrada do usuário antes de processar.
 
-* Erro Tratado: Se o usuário digitar letras ou símbolos (ex: "123abc4"), o programa ignora os caracteres inválidos e processa apenas os números.
-
-* RGM Vazio: Se nenhuma entrada numérica for detectada, o programa exibe uma mensagem de erro (RGM invalido) na saída padrão (stderr) e encerra a execução com código de erro 1, evitando falhas de segmentação.
-
+* Erro Tratado: Se o usuário digitar qualquer caractere que não seja numérico (ex: "123abc4" ou símbolos), o programa detecta o caractere inválido, exibe uma mensagem de erro ```>> Erro: O RGM deve conter APENAS numeros ``` e reinicia o ciclo de leitura (volta ao menu), obrigando o usuário a digitar novamente.
+  
+* RGM Vazio ou Longo: Se nenhuma entrada for detectada ou se exceder 8 dígitos, o programa também exibe erro e solicita nova entrada.
+  
 **Gerenciamento de Memória (Alocação Dinâmica):**
 
 * Todas as alocações de vetores (para RGM e Benchmarks) são feitas via malloc.
@@ -157,6 +157,7 @@ Baseado nos testes com dados aleatórios, o Insertion Sort se mostrou o "melhor"
 
 
 * Para N=10.000, o tempo de todos os métodos O(n²) começa a se tornar impraticável (quase 1 segundo para o Bubble Sort), demonstrando a necessidade clara de algoritmos O(n log n) (como Merge ou Quick Sort) para conjuntos de dados maiores.
+
 
 
 
