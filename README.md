@@ -8,11 +8,11 @@ Este projeto contém a implementação e análise de três algoritmos de ordena�
 
 Foram escolhidos os três algoritmos quadráticos clássicos (O(n²)) para permitir uma comparação direta de suas eficiências em dados aleatórios e pequenos:
 
-**Bubble Sort:** Compara pares adjacentes e os troca se estiverem fora de ordem. É simples, mas geralmente o mais lento.
+* **Bubble Sort:** Compara pares adjacentes e os troca se estiverem fora de ordem. É simples, mas geralmente o mais lento.
 
-**Selection Sort:** Encontra o menor elemento restante e o coloca na posição correta. Minimiza o número de trocas (O(n) trocas).
+* **Selection Sort:** Encontra o menor elemento restante e o coloca na posição correta. Minimiza o número de trocas (O(n) trocas).
 
-**Insertion Sort:** Constrói a lista ordenada "in-place", inserindo cada elemento em sua posição correta na sub-lista já ordenada. É eficiente para dados pequenos ou quase ordenados.
+* **Insertion Sort:** Constrói a lista ordenada "in-place", inserindo cada elemento em sua posição correta na sub-lista já ordenada. É eficiente para dados pequenos ou quase ordenados.
 
 ## 2. Como Compilar e Rodar
 
@@ -150,3 +150,4 @@ Baseado nos testes com dados aleatórios, o Insertion Sort se mostrou o "melhor"
 
 
 * Para N=10.000, o tempo de todos os métodos O(n²) começa a se tornar impraticável (quase 1 segundo para o Bubble Sort), demonstrando a necessidade clara de algoritmos O(n log n) (como Merge ou Quick Sort) para conjuntos de dados maiores.
+
